@@ -1,4 +1,4 @@
-- name: install packages
+- name: install packages with blocks
   hosts: workers
   become: true
 
