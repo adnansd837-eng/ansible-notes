@@ -1,0 +1,42 @@
+- name: install packages
+  hosts: workers
+  become: true
+
+  vars_files:
+    - vars/packages.yml
+
+  tasks:
+    - name: ubuntu specific task
+      block:
+        - name: update chache
+          apt:
+            update_cache: true
+        - name: intall docker
+          apt:
+            name: docker.io
+            state: present
+      when: ansible_facts['distribution'] == "Ubuntu"
+ 
+    - name: Amazon specific task
+      block:
+        - name: Install Docker
+          dnf:
+            name: docker
+            state: present
+      when:  ansible_facts['distribution'] == "Amazon"  
+    
+    - name: RedHat specific task
+      block:
+        - name: Install Docker
+          dnf:
+            name: docker
+            state: present
+      when: ansible_facts['distribution'] == "RedHat" 
+      
+
+    - name: install packages
+      package:
+        name: "{{item}}"
+        state: present
+      loop:  "{{base_packages}}"
+        
